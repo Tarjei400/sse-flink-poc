@@ -12,9 +12,7 @@ services:
       - ./application:/app
       - ./module.yaml:/module.yaml
     ports:
-      - "8081:8081"
-      - "8090:8090"
-      - "8091:8091"
+      - "8080:8080"
 
   ###############################################################
   #    Mercure.rocks runtime for SSE
@@ -30,7 +28,7 @@ services:
     # Uncomment the following line to enable the development mode
     command: /usr/bin/caddy run -config /etc/caddy/Caddyfile.dev
     ports:
-      - "8080:80"
+      - "8081:80"
       - "10443:443"
 
   ###############################################################
@@ -45,6 +43,8 @@ services:
     command: jobmanager
     environment:
       - JOB_MANAGER_RPC_ADDRESS=jobmanager
+    volumes:
+      - ./module.yaml:/module.yaml
 
   ###############################################################
   #    Flink taskmanager
@@ -61,3 +61,5 @@ services:
       - "jobmanager:jobmanager"
     environment:
       - JOB_MANAGER_RPC_ADDRESS=jobmanager
+    volumes:
+      - ./module.yaml:/module.yaml
