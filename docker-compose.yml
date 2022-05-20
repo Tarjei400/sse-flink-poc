@@ -28,8 +28,36 @@ services:
       MERCURE_PUBLISHER_JWT_KEY: '!ChangeMe!'
       MERCURE_SUBSCRIBER_JWT_KEY: '!ChangeMe!'
     # Uncomment the following line to enable the development mode
-    #command: /usr/bin/caddy run -config /etc/caddy/Caddyfile.dev
+    command: /usr/bin/caddy run -config /etc/caddy/Caddyfile.dev
     ports:
-      - "80:80"
-      - "443:443"
+      - "8080:80"
+      - "10443:443"
 
+  ###############################################################
+  #    Flink jobmanager
+  ###############################################################
+  jobmanager:
+    image: flink
+    expose:
+      - "6123"
+    ports:
+      - "8082:8081"
+    command: jobmanager
+    environment:
+      - JOB_MANAGER_RPC_ADDRESS=jobmanager
+
+  ###############################################################
+  #    Flink taskmanager
+  ###############################################################
+  taskmanager:
+    image: flink
+    expose:
+      - "6121"
+      - "6122"
+    depends_on:
+      - jobmanager
+    command: taskmanager
+    links:
+      - "jobmanager:jobmanager"
+    environment:
+      - JOB_MANAGER_RPC_ADDRESS=jobmanager
