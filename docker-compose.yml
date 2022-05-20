@@ -21,15 +21,15 @@ services:
     image: dunglas/mercure
     restart: unless-stopped
     environment:
-      # Uncomment the following line to disable HTTPS
-      #SERVER_NAME: ':80'
+      SERVER_NAME: ':80'
       MERCURE_PUBLISHER_JWT_KEY: '!ChangeMe!'
       MERCURE_SUBSCRIBER_JWT_KEY: '!ChangeMe!'
-    # Uncomment the following line to enable the development mode
     command: /usr/bin/caddy run -config /etc/caddy/Caddyfile.dev
     ports:
       - "8081:80"
-      - "10443:443"
+    volumes:
+      - caddy_data:/data
+      - caddy_config:/config
 
   ###############################################################
   #    Flink jobmanager
@@ -63,3 +63,16 @@ services:
       - JOB_MANAGER_RPC_ADDRESS=jobmanager
     volumes:
       - ./module.yaml:/module.yaml
+  serve:
+    image: node:16-alpine
+    user: node
+    working_dir: /app
+    command: ["npm", "run", "serve"]
+    volumes:
+      - ./frontend:/app
+    ports:
+      - "3000:3000"
+
+volumes:
+  caddy_data:
+  caddy_config:
