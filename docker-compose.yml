@@ -89,7 +89,7 @@ services:
     image: node:16-alpine
     user: node
     working_dir: /app
-    command: ["npm", "run", "serve"]
+    command: ["npm", "run", "start"]
     volumes:
       - ./frontend:/app
     ports:

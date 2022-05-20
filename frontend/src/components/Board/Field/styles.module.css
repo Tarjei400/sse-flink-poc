@@ -1,0 +1,8 @@
+.active {
+    background-color: blue;
+}
+
+.field {
+    height: 100%;
+    width: 100%;
+}
