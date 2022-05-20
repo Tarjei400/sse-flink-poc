@@ -1,39 +1,35 @@
+version: "2.1"
+services:
+  ###############################################################
+  #    Nest
+  ###############################################################
+  nest:
+    image: node:16-alpine
+    user: node
+    working_dir: /app
+    command: ["npm", "run", "start:dev"]
+    volumes:
+      - ./application:/app
+      - ./module.yaml:/module.yaml
+    ports:
+      - "8081:8081"
+      - "8090:8090"
+      - "8091:8091"
 
-  version: "2.1"
-
-  services:
-
-
-    ###############################################################
-    #    StateFun runtime
-    ###############################################################
-
-    statefun:
-      image: apache/flink-statefun-playground:3.2.0-1.0
-      ports:
-        - "8081:8081"
-        - "8090:8090"
-        - "8091:8091"
-
-      volumes:
-        - ./module.yaml:/module.yaml
-
-    ###############################################################
-    #    Mercure.rocks runtime for SSE
-    ###############################################################
-
-
-    mercure:
-      image: dunglas/mercure
-      restart: unless-stopped
-      environment:
-        # Uncomment the following line to disable HTTPS
-        #SERVER_NAME: ':80'
-        MERCURE_PUBLISHER_JWT_KEY: '!ChangeMe!'
-        MERCURE_SUBSCRIBER_JWT_KEY: '!ChangeMe!'
-      # Uncomment the following line to enable the development mode
-      #command: /usr/bin/caddy run -config /etc/caddy/Caddyfile.dev
-      ports:
-        - "80:80"
-        - "443:443"
+  ###############################################################
+  #    Mercure.rocks runtime for SSE
+  ###############################################################
+  mercure:
+    image: dunglas/mercure
+    restart: unless-stopped
+    environment:
+      # Uncomment the following line to disable HTTPS
+      #SERVER_NAME: ':80'
+      MERCURE_PUBLISHER_JWT_KEY: '!ChangeMe!'
+      MERCURE_SUBSCRIBER_JWT_KEY: '!ChangeMe!'
+    # Uncomment the following line to enable the development mode
+    #command: /usr/bin/caddy run -config /etc/caddy/Caddyfile.dev
+    ports:
+      - "80:80"
+      - "443:443"
 
