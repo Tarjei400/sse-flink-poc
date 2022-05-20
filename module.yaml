@@ -1,32 +1,55 @@
-
-# Licensed to the Apache Software Foundation (ASF) under one or more
-# contributor license agreements.  See the NOTICE file distributed with
-# this work for additional information regarding copyright ownership.
-# The ASF licenses this file to You under the Apache License, Version 2.0
-# (the "License"); you may not use this file except in compliance with
-# the License.  You may obtain a copy of the License at
+# Copyright 2020 Ververica GmbH
 #
-#     http://www.apache.org/licenses/LICENSE-2.0
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#  http://www.apache.org/licenses/LICENSE-2.0
 #
 # Unless required by applicable law or agreed to in writing, software
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 kind: io.statefun.endpoints.v2/http
 spec:
-  functions: example/*
-  urlPathTemplate: http://host.docker.internal:8080/flink
-#  transport:
-#    type: io.statefun.transports.v1/async
+  functions: com.ververica.fn/*
+  urlPathTemplate: http://host-machine:8100/statefun
+  transport:
+    type: io.statefun.transports.v1/async
 ---
-kind: io.statefun.playground.v1/ingress
+kind: io.statefun.endpoints.v2/http
 spec:
-  port: 8090
+  functions: com.ververica.ds/*
+  urlPathTemplate: http://model:8900/statefun
+  transport:
+    type: io.statefun.transports.v1/async
 ---
-kind: io.statefun.playground.v1/egress
+kind: io.statefun.kafka.v1/ingress
 spec:
-  port: 8091
+  id: com.ververica.ingress/Transaction
+  address: kafka-broker:9092
+  consumerGroupId: transaction-reader
   topics:
-    - greetings
+    - topic: transactions
+      valueType: com.ververica.types/transaction
+      targets:
+        - com.ververica.fn/transaction-manager
+---
+kind: io.statefun.kafka.v1/ingress
+spec:
+  id: com.ververica.types/confrim-fraud
+  address: kafka-broker:9092
+  consumerGroupId: confirm-fraud-reader
+  topics:
+    - topic: confirmed
+      valueType: com.ververica.types/confirm-fraud
+      targets:
+        - com.ververica.fn/counter
+---
+kind: io.statefun.kafka.v1/egress
+spec:
+  id: com.ververica.egress/alerts
+  address: kafka-broker:9092
+  deliverySemantic:
+    type: at-least-once

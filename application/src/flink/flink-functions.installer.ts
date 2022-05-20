@@ -44,12 +44,7 @@ export class FlinkFunctionsModule implements OnApplicationBootstrap {
     this.stateFun.bind({
       typename: config.name,
       fn: config.handler,
-      specs: [
-        {
-          name: 'visits',
-          type: StateFun.intType(),
-        },
-      ],
+      specs: config.specs
     });
   }
 
