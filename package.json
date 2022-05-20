@@ -1,0 +1,15 @@
+{
+  "name": "flink-poc",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "author": "",
+  "license": "ISC",
+  "scripts": {
+    "start": "node example.js"
+  },
+  "dependencies": {
+    "@golevelup/nestjs-discovery": "^3.0.0",
+    "apache-flink-statefun": "3.2.0"
+  }
+}
